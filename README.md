@@ -1,44 +1,60 @@
 # clojure-api
 
-FIXME: description
+## Description
 
+---
+This is a Clojure project titled "clojure-api".
+This is created to understand the working of a stateful clojure API.
+It has dependencies on various libraries _viz~_ aero, pedestal, slf4j, and component. 
+This README provides instructions on how to set up and run the project.
+
+## Prerequisites
+
+---
+1. **JAVA**: You should have Java installed. Clojure runs on JVM(Java Virtual Machine) hence Java is mandatory.
+2. **Clojure**: This project is implemented in Clojure hence you need to install Clojure and Clojure CLI tool
+3. **Leiningen**: Leiningen is a tool which makes it easy to use Clojure 
 ## Installation
 
-Download from http://example.com/FIXME.
+---
+1. ### Installing Java
+    If you haven't installed Java then checkout [this link.](https://www.java.com/en/download/help/download_options.html)
+2. ### Installing Clojure CLI
+    If you haven't installed Clojure CLI then checkout [this link.](https://clojure.org/guides/install_clojure)
+3. ### Installing Leiningen
+    If you haven't installed Leiningen then checkout [this link](https://leiningen.org/).
+## Clone the Project 
 
-## Usage
+---
+You can clone this project to your local machine:
+```
+git clone https://github.com/inukahbhsekum/clojure-api.git
+cd clojure-api
+```
 
-FIXME: explanation
+## Running the project
 
-    $ java -jar clojure-api-0.1.0-standalone.jar [args]
+---
+1. Go to the project directory
+   ```
+   cd clojure-api
+   ```
+2. Compile the code
+   ```
+    lein do clean, deps, compile
+   ```
+3. Start the REPL
+   ```
+   lein repl
+   ```
+4. Start the server
+   ```
+   (require 'dev)
+   (in-ns 'dev)
+   (component-repl/reset)
+   ```
 
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2023 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+## Conclusion
+By now everything should be up and running.
+Explore the code, make changes.
+If you encounter any issues, please refer to the documentation for the libraries used, search on web for more guidance, or raise issue in this repository.
