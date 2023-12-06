@@ -1,5 +1,6 @@
 (ns component.clojure-api.api-test
-  (:require [clojure.string :as str]
+  (:require [cheshire.core :as json]
+            [clojure.string :as str]
             [clojure.test :refer :all]
             [clojure-api.components.pedestal-component :refer [url-for]]
             [clojure-api.core :as core]
@@ -36,8 +37,20 @@
     (is (= {:body   "Hello, world!\n"
             :status 200}
            (-> (sut->url sut (url-for :greet))
-               (client/get)
+               (client/get {:accept :json})
                (select-keys [:body :status]))))))
+
+
+(deftest content-negotiation-test
+  (testing "only application/json is accepetable"
+    (with-system
+      [sut (core/clojure-api-system {:server {:port (get-free-port)}})]
+      (is (= {:body   "Not Acceptable"
+              :status 406}
+             (-> (sut->url sut (url-for :greet))
+                 (client/get {:accept           :edn
+                              :throw-exceptions false})
+                 (select-keys [:body :status])))))))
 
 
 (deftest a-simple-api-test
@@ -45,10 +58,10 @@
 
 
 (deftest get-todo-test
-  (let [todo-id-1 (random-uuid)
+  (let [todo-id-1 (str (random-uuid))
         todo-1 {:id    todo-id-1
                 :name  "My todo for test"
-                :items [{:id   (random-uuid)
+                :items [{:id   (str (random-uuid))
                          :name "finish the test"}]}]
     (with-system
       [sut (core/clojure-api-system {:server {:port (get-free-port)}})]
@@ -56,15 +69,35 @@
                   :in-memory-state-component
                   :state-atom)
               [todo-1])
-      (is (= {:body   (pr-str todo-1)
+      (is (= {:body   todo-1
               :status 200}
              (-> (sut->url sut (url-for :get-todo :path-params {:todo-id todo-id-1}))
-                 (client/get)
+                 (client/get {:accept           :json
+                              :as               :json
+                              :throw-exceptions false})
                  (select-keys [:body :status]))))
       (testing "Empty body is returned for random todo id"
         (is (= {:body   ""
-                :status 200}
+                :status 404}
                (-> (sut->url sut (url-for :get-todo :path-params {:todo-id (random-uuid)}))
-                   (client/get)
+                   (client/get {:throw-exceptions false})
                    (select-keys [:body :status]))))))))
 
+
+(deftest post-todo-test
+  (let [todo-id-1 (str (random-uuid))
+        todo-1 {:id    todo-id-1
+                :name  "My todo for test"
+                :items [{:id   (str (random-uuid))
+                         :name "finish the test"}]}]
+    (with-system
+      [sut (core/clojure-api-system {:server {:port (get-free-port)}})]
+      (is (= {:body   todo-1
+              :status 201}
+             (-> (sut->url sut (url-for :post-todo))
+                 (client/post {:accept :json
+                               :content-type :json
+                               :as :json
+                               :throw-exceptions false
+                               :body (json/encode todo-1)})
+                 (select-keys [:body :status])))))))
