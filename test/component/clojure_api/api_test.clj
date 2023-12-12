@@ -95,9 +95,9 @@
       (is (= {:body   todo-1
               :status 201}
              (-> (sut->url sut (url-for :post-todo))
-                 (client/post {:accept :json
-                               :content-type :json
-                               :as :json
+                 (client/post {:accept           :json
+                               :content-type     :json
+                               :as               :json
                                :throw-exceptions false
-                               :body (json/encode todo-1)})
+                               :body             (json/encode todo-1)})
                  (select-keys [:body :status])))))))

@@ -11,7 +11,8 @@
                  [io.pedestal/pedestal.route "0.6.0"]
                  [io.pedestal/pedestal.service "0.6.0"]
                  [org.clojure/clojure "1.10.3"]
-                 [org.slf4j/slf4j-simple "2.0.7"]]
+                 [org.slf4j/slf4j-simple "2.0.7"]
+                 [org.clojure/tools.logging "1.2.4"]]
   :main ^:skip-aot clojure-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot      :all

@@ -47,7 +47,7 @@
 
 (defn save-todo
   [{:keys [in-memory-state-component]} todo]
-  (reset! (:state-atom in-memory-state-component) [todo]))
+  (swap! (:state-atom in-memory-state-component) conj todo))
 
 
 (def post-todo-handler
@@ -57,7 +57,10 @@
      (let [request (:request context)
            todo {:json-params request}]
        (save-todo dependencies todo)
-       (assoc context :response (created todo))))})
+       (assoc context :response (-> todo
+                                    :json-params
+                                    :json-params
+                                    created))))})
 
 
 (comment
