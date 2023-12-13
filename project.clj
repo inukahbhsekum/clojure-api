@@ -12,7 +12,8 @@
                  [io.pedestal/pedestal.service "0.6.0"]
                  [org.clojure/clojure "1.10.3"]
                  [org.slf4j/slf4j-simple "2.0.7"]
-                 [org.clojure/tools.logging "1.2.4"]]
+                 [org.clojure/tools.logging "1.2.4"]
+                 [prismatic/schema "1.4.1"]]
   :main ^:skip-aot clojure-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot      :all

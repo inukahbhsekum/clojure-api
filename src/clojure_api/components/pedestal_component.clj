@@ -1,11 +1,13 @@
 (ns clojure-api.components.pedestal-component
-  (:require [com.stuartsierra.component :as component]
+  (:require [cheshire.core :as json]
+            [clojure.tools.logging :as ctl]
+            [com.stuartsierra.component :as component]
             [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.interceptor :as interceptor]
             [io.pedestal.http.content-negotiation :as content-negotiation]
             [io.pedestal.http.body-params :as body-params]
-            [cheshire.core :as json]))
+            [schema.core :as s]))
 
 
 (defn response
@@ -49,18 +51,27 @@
   [{:keys [in-memory-state-component]} todo]
   (swap! (:state-atom in-memory-state-component) conj todo))
 
+(s/defschema
+  TodoItem
+  {:id     s/Str
+   :name   s/Str
+   :status s/Str})
+
+(s/defschema
+  Todo
+  {:id    s/Str
+   :name  s/Str
+   :items [TodoItem]})
+
 
 (def post-todo-handler
   {:name :post-todo-handler
    :enter
    (fn [{:keys [dependencies] :as context}]
      (let [request (:request context)
-           todo {:json-params request}]
+           todo (s/validate Todo (get-in request [:json-params]))]
        (save-todo dependencies todo)
-       (assoc context :response (-> todo
-                                    :json-params
-                                    :json-params
-                                    created))))})
+       (assoc context :response (created todo))))})
 
 
 (comment
