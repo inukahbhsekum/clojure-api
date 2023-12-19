@@ -1,103 +1,10 @@
 (ns clojure-api.components.pedestal-component
-  (:require [cheshire.core :as json]
-            [clojure.tools.logging :as ctl]
+  (:require [clojure.tools.logging :as ctl]
+            [clojure-api.routes :as routes]
             [com.stuartsierra.component :as component]
             [io.pedestal.http :as http]
-            [io.pedestal.http.route :as route]
             [io.pedestal.interceptor :as interceptor]
-            [io.pedestal.http.content-negotiation :as content-negotiation]
-            [io.pedestal.http.body-params :as body-params]
-            [schema.core :as s]))
-
-
-(defn response
-  ([status]
-   (response status nil))
-  ([status body]
-   (merge
-     {:status  status
-      :headers {"Content-type" "application/json"}}
-     (when body {:body (json/encode body)}))))
-
-
-(def ok (partial response 200))
-(def not-found (partial response 404))
-(def created (partial response 201))
-
-(defn get-todo-by-id
-  [{:keys [in-memory-state-component]} todo-id]
-  (->> @(:state-atom in-memory-state-component)
-       (filter (fn [todo]
-                 (= todo-id (:id todo))))
-       (first)))
-
-
-(def get-todo-handler
-  {:name :get-todo-handler
-   :enter
-   (fn [{:keys [dependencies] :as context}]
-     (let [request (:request context)
-           todo (get-todo-by-id dependencies
-                                (-> request
-                                    :path-params
-                                    :todo-id))
-           response (if todo
-                      (ok todo)
-                      (not-found))]
-       (assoc context :response response)))})
-
-
-(defn save-todo
-  [{:keys [in-memory-state-component]} todo]
-  (swap! (:state-atom in-memory-state-component) conj todo))
-
-(s/defschema
-  TodoItem
-  {:id     s/Str
-   :name   s/Str
-   :status s/Str})
-
-(s/defschema
-  Todo
-  {:id    s/Str
-   :name  s/Str
-   :items [TodoItem]})
-
-
-(def post-todo-handler
-  {:name :post-todo-handler
-   :enter
-   (fn [{:keys [dependencies] :as context}]
-     (let [request (:request context)
-           todo (s/validate Todo (get-in request [:json-params]))]
-       (save-todo dependencies todo)
-       (assoc context :response (created todo))))})
-
-
-(comment
-  [{:id    (random-uuid)
-    :name  "My todo list"
-    :items [{:id     (random-uuid)
-             :name   "Make a new youtube video"
-             :status :created}]}
-   {:id    (random-uuid)
-    :name  "My todo list"
-    :items []}])
-
-
-(defn respond-hello
-  [request]
-  {:status 200
-   :body   "Hello, world!\n"})
-
-
-(def routes (route/expand-routes
-              #{["/greet" :get respond-hello :route-name :greet]
-                ["/todo/:todo-id" :get get-todo-handler :route-name :get-todo]
-                ["/todo" :post [(body-params/body-params) post-todo-handler] :route-name :post-todo]}))
-
-
-(def url-for (route/url-for-routes routes))
+            [io.pedestal.http.content-negotiation :as content-negotiation]))
 
 
 (defn inject-dependencies
@@ -117,8 +24,8 @@
   component/Lifecycle
 
   (start [component]
-    (println "Starting PedestalComponent")
-    (let [server (-> {::http/routes routes
+    (ctl/info "Starting PedestalComponent")
+    (let [server (-> {::http/routes routes/routes
                       ::http/type   :jetty
                       ::http/join?  false
                       ::http/port   (-> config
@@ -133,7 +40,7 @@
       (assoc component :server server)))
 
   (stop [component]
-    (println "Stopping PedestalComponent")
+    (ctl/info "Stopping PedestalComponent")
     (when-let [server (:server component)]
       (http/stop server))
     (assoc component :server nil)))

@@ -2,7 +2,7 @@
   (:require [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.test :refer :all]
-            [clojure-api.components.pedestal-component :refer [url-for]]
+            [clojure-api.routes :refer [url-for]]
             [clojure-api.core :as core]
             [com.stuartsierra.component :as component]
             [clj-http.client :as client])
