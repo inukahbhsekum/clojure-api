@@ -2,16 +2,17 @@
   (:require [clojure.test :refer :all]
             [clojure-api.schemas :as cs]
             [schema.core :as s]
-            [utils.response-utils :as ur]))
+            [utils.response-utils :as ur])
+  (:import [java.util UUID]))
 
 
 (comment
-  [{:id    (random-uuid)
+  [{:id    (UUID/randomUUID)
     :name  "My todo list"
-    :items [{:id     (random-uuid)
+    :items [{:id     (UUID/randomUUID)
              :name   "Make a new youtube video"
              :status :created}]}
-   {:id    (random-uuid)
+   {:id    (UUID/randomUUID)
     :name  "My todo list"
     :items []}])
 

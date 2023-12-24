@@ -6,7 +6,8 @@
             [clojure-api.core :as core]
             [com.stuartsierra.component :as component]
             [clj-http.client :as client])
-  (:import (java.net ServerSocket)))
+  (:import (java.net ServerSocket)
+           (java.util UUID)))
 
 
 (defmacro with-system
@@ -58,10 +59,10 @@
 
 
 (deftest get-todo-test
-  (let [todo-id-1 (str (random-uuid))
+  (let [todo-id-1 (str (UUID/randomUUID))
         todo-1 {:id    todo-id-1
                 :name  "My todo for test"
-                :items [{:id     (str (random-uuid))
+                :items [{:id     (str (UUID/randomUUID))
                          :name   "finish the test"
                          :status "status 1"}]}]
     (with-system
@@ -80,21 +81,21 @@
       (testing "Empty body is returned for random todo id"
         (is (= {:body   ""
                 :status 404}
-               (-> (sut->url sut (url-for :get-todo :path-params {:todo-id (random-uuid)}))
+               (-> (sut->url sut (url-for :get-todo :path-params {:todo-id (UUID/randomUUID)}))
                    (client/get {:throw-exceptions false})
                    (select-keys [:body :status]))))))))
 
 
 (deftest post-todo-test
-  (let [todo-id-1 (str (random-uuid))
+  (let [todo-id-1 (str (UUID/randomUUID))
         todo-1 {:id    todo-id-1
                 :name  "My todo for test"
-                :items [{:id     (str (random-uuid))
+                :items [{:id     (str (UUID/randomUUID))
                          :name   "finish the test"
                          :status "Failed"}]}
         todo-2 {:id    todo-id-1
                 :name  "My todo for test"
-                :items [{:id   (str (random-uuid))
+                :items [{:id   (str (UUID/randomUUID))
                          :name "finish the test"}]}]
     (with-system
       [sut (core/clojure-api-system {:server {:port (get-free-port)}})]

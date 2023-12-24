@@ -1,6 +1,7 @@
 (ns unit.clojure-api.simple-test
   (:require [clojure.test :refer :all]
-            [clojure-api.components.pedestal-component :refer [url-for]]))
+            [clojure-api.routes :refer [url-for]])
+  (:import [java.util UUID]))
 
 
 (deftest a-simple-passing-test
@@ -11,6 +12,6 @@
   (testing "greet endpoint url"
     (is (= "/greet" (url-for :greet))))
   (testing "get todo by id endpoint url"
-    (let [todo-id (random-uuid)]
+    (let [todo-id (UUID/randomUUID)]
       (is (= (str "/todo/" todo-id)
              (url-for :get-todo {:path-params {:todo-id todo-id}}))))))
