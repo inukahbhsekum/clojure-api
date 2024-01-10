@@ -7,6 +7,7 @@
 
 (def routes (route/expand-routes
               #{["/greet" :get handlers/respond-hello :route-name :greet]
+                ["/info" :get handlers/info-handler :route-name :info]
                 ["/todo/:todo-id" :get handlers/get-todo-handler :route-name :get-todo]
                 ["/todo" :post [(body-params/body-params) handlers/post-todo-handler] :route-name :post-todo]}))
 

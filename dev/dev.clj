@@ -5,5 +5,5 @@
 
 
 (component-repl/set-init
-  (fn [_old-system]
+  (fn [_]
     (core/clojure-api-system (config/read-config))))

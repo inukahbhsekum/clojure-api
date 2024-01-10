@@ -1,6 +1,7 @@
 (ns clojure-api.handlers
   (:require [clojure.test :refer :all]
             [clojure-api.schemas :as cs]
+            [next.jdbc :as jdbc]
             [schema.core :as s]
             [utils.response-utils :as ur])
   (:import [java.util UUID]))
@@ -39,6 +40,16 @@
                       (ur/not-found))]
        (assoc context :response response)))})
 
+
+(def info-handler
+  {:name :info-handler
+   :enter
+   (fn [{:keys [dependencies] :as context}]
+     (let [{:keys [data-source]} dependencies
+           db-response (first (jdbc/execute! (data-source)
+                                             ["SHOW SERVER_VERSION"]))]
+       (assoc context :response {:status 200
+                                 :body   (str "Database server version: " db-response)})))})
 
 (defn- save-todo
   [{:keys [in-memory-state-component]} todo]

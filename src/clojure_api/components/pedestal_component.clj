@@ -20,7 +20,7 @@
 
 
 (defrecord PedestalComponent
-  [config example-component in-memory-state-component]
+  [config example-component data-source in-memory-state-component]
   component/Lifecycle
 
   (start [component]
