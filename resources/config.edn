@@ -1,6 +1,6 @@
 {:server  {:port #long #or [#env CLOJURE_API_SERVER_PORT 3001]}
  :htmx    {:server {:port 3002}}
- :db-spec {:jdbcUrl  "jdbc:postgresql://localhost:49168/clojure-api-db?loggerLevel=OFF"
+ :db-spec {:jdbcUrl  "jdbc:postgresql://localhost:49983/clojure-api-db?loggerLevel=OFF"
            :username "cad"
            :password "cad"
-           :dbtype   "postgres"}}
+           :dbtype   "pgsql"}}

@@ -14,7 +14,8 @@
            org.postgresql/postgresql         {:mvn/version "42.2.10"}
            com.zaxxer/HikariCP               {:mvn/version "5.1.0"}
            hiccup/hiccup                     {:mvn/version "2.0.0-RC1"}
-           faker/faker                       {:mvn/version "0.3.2"}}
+           faker/faker                       {:mvn/version "0.3.2"}
+           hikari-cp/hikari-cp               {:mvn/version "3.0.1"}}
  :aliases {:dev  {:main-opts ["-e" "(require,'dev)"
                               "-e" "(in-ns,'dev)"]}
            :test {:extra-paths ["test"]
