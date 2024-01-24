@@ -45,7 +45,7 @@ cd clojure-api
    ```
 3. Start the REPL
    ```
-   lein repl
+   lein trampoline repl :headless
    ```
 4. Start the server
    ```
