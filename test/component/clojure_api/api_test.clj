@@ -34,7 +34,10 @@
 
 (deftest greeting-test
   (with-system
-    [sut (core/clojure-api-system {:server {:port (get-free-port)}})]
+    [sut (core/clojure-api-system {:server  {:port (get-free-port)}
+                                   :db-spec {:jdbcUrl  "postgresql://localhost:5432/clojure-api-db"
+                                             :username "cad"
+                                             :password "cad"}})]
     (is (= {:body   "Hello, world!\n"
             :status 200}
            (-> (sut->url sut (url-for :greet))
@@ -43,7 +46,7 @@
 
 
 (deftest content-negotiation-test
-  (testing "only application/json is accepetable"
+  (testing "only application/json is acceptable"
     (with-system
       [sut (core/clojure-api-system {:server {:port (get-free-port)}})]
       (is (= {:body   "Not Acceptable"

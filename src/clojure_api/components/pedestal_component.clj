@@ -48,4 +48,5 @@
 
 (defn new-pedestal-component
   [config]
+  (print "config: " config)
   (map->PedestalComponent {:config config}))

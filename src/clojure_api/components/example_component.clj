@@ -8,7 +8,7 @@
 
   (start [component]
     (println "Starting ExampleComponent")
-      (assoc component :state ::started))
+    (assoc component :state ::started))
 
   (stop [component]
     (println "Stopping ExampleComponent")
@@ -17,4 +17,4 @@
 
 (defn new-example-component
   [config]
-  (map->ExampleComponent {:config config}))
+  (map->ExampleComponent config))

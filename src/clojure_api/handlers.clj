@@ -1,7 +1,7 @@
 (ns clojure-api.handlers
   (:require [clojure.test :refer :all]
+            [clojure-api.models.info :as cmi]
             [clojure-api.schemas :as cs]
-            [next.jdbc :as jdbc]
             [schema.core :as s]
             [utils.response-utils :as ur])
   (:import [java.util UUID]))
@@ -46,10 +46,10 @@
    :enter
    (fn [{:keys [dependencies] :as context}]
      (let [{:keys [data-source]} dependencies
-           db-response (first (jdbc/execute! (data-source)
-                                             ["SHOW SERVER_VERSION"]))]
+           response (cmi/execute-query data-source "SHOW SERVER_VERSION")]
        (assoc context :response {:status 200
-                                 :body   (str "Database server version: " db-response)})))})
+                                 :body   (str "Database server version: " (:server_version response))})))})
+
 
 (defn- save-todo
   [{:keys [in-memory-state-component]} todo]
