@@ -5,8 +5,12 @@
             [clojure-api.config :as config]
             [clojure.string :as str]
             [com.stuartsierra.component :as component]
-            [hikari-cp.core :as cp])
-  (:import (java.net URI)))
+            [hikari-cp.core :as cp]
+            [io.pedestal.log :as log]
+            [next.jdbc.connection :as connection])
+  (:import (com.zaxxer.hikari HikariDataSource)
+           (java.net URI)
+           (org.flywaydb.core Flyway)))
 
 
 (defn- db-info-from-url
@@ -45,7 +49,15 @@
     (component/system-map
       :example-component (example-component/new-example-component config)
       :in-memory-state-component (in-memory-state-component/new-in-memory-state-component config)
-      :data-source data-source
+      :data-source (connection/component HikariDataSource
+                                         (assoc (:db-spec config) :init-fn (fn [datasource]
+                                                                             (log/info "Running database init" datasource)
+                                                                             (.migrate
+                                                                               (.. (Flyway/configure)
+                                                                                   (dataSource datasource)
+                                                                                   (locations (into-array String ["classpath:database/migrations"]))
+                                                                                   (table "schema_version")
+                                                                                   (load))))))
       :pedestal-component (component/using
                             (pedestal-component/new-pedestal-component config)
                             [:example-component
