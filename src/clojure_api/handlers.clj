@@ -2,6 +2,9 @@
   (:require [clojure.test :refer :all]
             [clojure-api.models.info :as cmi]
             [clojure-api.schemas :as cs]
+            [honey.sql :as sql]
+            [next.jdbc :as jdbc]
+            [next.jdbc.result-set :as rs]
             [schema.core :as s]
             [utils.response-utils :as ur])
   (:import [java.util UUID]))
@@ -35,6 +38,28 @@
                                 (-> request
                                     :path-params
                                     :todo-id))
+           response (if todo
+                      (ur/ok todo)
+                      (ur/not-found))]
+       (assoc context :response response)))})
+
+
+(def db-get-todo-handler
+  {:name :db-get-todo-handler
+   :enter
+   (fn [{:keys [dependencies] :as context}]
+     (let [{:keys [data-source]} dependencies
+           todo-id (-> context
+                       :request
+                       :path-params
+                       :todo-id
+                       (UUID/fromString))
+           query (sql/format {:select :*
+                              :from   :todo
+                              :where  [:= :todo-id todo-id]})
+           todo (jdbc/execute-one! (data-source)
+                                   query
+                                   {:builder-fn rs/as-unqualified-kebab-maps})
            response (if todo
                       (ur/ok todo)
                       (ur/not-found))]

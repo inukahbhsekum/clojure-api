@@ -17,6 +17,8 @@
                  [org.testcontainers/testcontainers "1.18.0"]
                  [org.testcontainers/postgresql "1.18.0"]
                  [com.github.seancorfield/next.jdbc "1.3.883"]
+                 [org.flywaydb/flyway-core "9.21.2"]
+                 [com.github.seancorfield/honeysql "2.4.1066"]
                  [org.postgresql/postgresql "42.2.10"]
                  [com.zaxxer/HikariCP "5.0.1"]
                  [hiccup/hiccup "2.0.0-RC1"]

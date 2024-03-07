@@ -9,7 +9,8 @@
               #{["/greet" :get handlers/respond-hello :route-name :greet]
                 ["/info" :get handlers/info-handler :route-name :info]
                 ["/todo/:todo-id" :get handlers/get-todo-handler :route-name :get-todo]
-                ["/todo" :post [(body-params/body-params) handlers/post-todo-handler] :route-name :post-todo]}))
+                ["/todo" :post [(body-params/body-params) handlers/post-todo-handler] :route-name :post-todo]
+                ["/db/todo/:todo-id" :get handlers/db-get-todo-handler :route-name :db-get-todo]}))
 
 
 (def url-for (route/url-for-routes routes))
